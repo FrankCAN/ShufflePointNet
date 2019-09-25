@@ -10,3 +10,4 @@ In this repository, we release code for training a ShufflePointNet classificatio
 
 # Requirement
 * [TensorFlow](https://www.tensorflow.org/)
+
