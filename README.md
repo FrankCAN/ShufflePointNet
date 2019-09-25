@@ -8,6 +8,9 @@ We propose a deep-wide neural network, called ShufflePointNet, to exploit fine-g
 
 In this repository, we release code for training a ShufflePointNet classification network on ModelNet40 dataset and segmentation network on ShapeNet part, S3DIS, KITTI dataset.
 
+# Results
+
+
 # Requirement
 * [TensorFlow](https://www.tensorflow.org/)
 
