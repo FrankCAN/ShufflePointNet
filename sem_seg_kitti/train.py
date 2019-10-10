@@ -58,7 +58,7 @@ BN_DECAY_DECAY_RATE = 0.5
 BN_DECAY_DECAY_STEP = float(DECAY_STEP)
 BN_DECAY_CLIP = 0.99
 
-train_data, train_label = provider.load_h5('/home/chencan/dataset/kitti/train_data.h5')
+train_data, train_label = provider.load_h5('/home/chencan/data/KITTI/object/training/hdf5/train_data.h5')
 train_label = train_label.reshape((-1, NUM_POINT))
 
 

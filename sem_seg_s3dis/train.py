@@ -40,7 +40,7 @@ MOMENTUM = FLAGS.momentum
 OPTIMIZER = FLAGS.optimizer
 DECAY_STEP = FLAGS.decay_step
 DECAY_RATE = FLAGS.decay_rate
-DATA_DIR = '/home/chencan/dataset/indoor_3d/data'
+DATA_DIR = '/home/chencan/data/indoor_3d/data'
 
 LOG_DIR = FLAGS.log_dir
 if not os.path.exists(LOG_DIR): os.mkdir(LOG_DIR)

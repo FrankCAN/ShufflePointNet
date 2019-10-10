@@ -42,7 +42,7 @@ def get_model(point_cloud, is_training, bn_decay=None):
     new_point_cloud_1 = gather_point(point_cloud_0, farthest_point_sample(npoints, point_cloud_0))
 
     net = get_sampled_edgeconv_groupconv(point_cloud_0, new_point_cloud_1, k, [32, 32, 64],
-                                         is_training=is_training, bn_decay=bn_decay, scope='layer1', bn=True)
+                                         is_training=is_training, bn_decay=bn_decay, scope='layer1', bn=True, is_dist=True)
     l1_net = tf.squeeze(net, [2])
 
     k = 30
@@ -51,10 +51,10 @@ def get_model(point_cloud, is_training, bn_decay=None):
 
     net = get_sampled_edgeconv_groupconv(net, sampled_net, k, [64, 64, 128],
                                          is_training=is_training, bn_decay=bn_decay, scope='layer2', bn=True,
-                                         sampled_pc=new_point_cloud_2, pc=new_point_cloud_1)
+                                         sampled_pc=new_point_cloud_2, pc=new_point_cloud_1, is_dist=True)
 
     net = get_edgeconv(net, k, [128, 128], is_training=is_training, bn_decay=bn_decay, scope='layer3', bn=True,
-                       associated=[sampled_net, tf.expand_dims(new_point_cloud_2, axis=-2)])
+                       associated=[sampled_net, tf.expand_dims(new_point_cloud_2, axis=-2)], is_dist=True)
     l2_net = tf.squeeze(net, [2])
 
     k = 20
@@ -63,7 +63,7 @@ def get_model(point_cloud, is_training, bn_decay=None):
 
     net = get_sampled_edgeconv_groupconv(net, sampled_net, k, [128, 128, 256],
                                          is_training=is_training, bn_decay=bn_decay, scope='layer4', bn=True,
-                                         sampled_pc=new_point_cloud_3, pc=new_point_cloud_2)
+                                         sampled_pc=new_point_cloud_3, pc=new_point_cloud_2, is_dist=True)
 
     l3_net = tf.squeeze(net, [2])
 
@@ -73,25 +73,25 @@ def get_model(point_cloud, is_training, bn_decay=None):
 
     net = get_sampled_edgeconv_groupconv(net, sampled_net, k, [256, 256, 512],
                                          is_training=is_training, bn_decay=bn_decay, scope='layer5', bn=True,
-                                         sampled_pc=new_point_cloud_4, pc=new_point_cloud_3)
+                                         sampled_pc=new_point_cloud_4, pc=new_point_cloud_3, is_dist=True)
 
     net = get_edgeconv(net, k, [256, 256], is_training=is_training, bn_decay=bn_decay, scope='layer6', bn=True,
-                       associated=[sampled_net, tf.expand_dims(new_point_cloud_4, axis=-2)])
+                       associated=[sampled_net, tf.expand_dims(new_point_cloud_4, axis=-2)], is_dist=True)
     l4_net = tf.squeeze(net, [2])
 
-    l3_net = pointnet_fp_module(new_point_cloud_3, new_point_cloud_4, l3_net, l4_net, [256, 256], is_training, bn_decay, scope='fa_layer1')
-    l2_net = pointnet_fp_module(new_point_cloud_2, new_point_cloud_3, l2_net, l3_net, [256, 256], is_training, bn_decay, scope='fa_layer2')
-    l1_net = pointnet_fp_module(new_point_cloud_1, new_point_cloud_2, l1_net, l2_net, [256, 128], is_training, bn_decay, scope='fa_layer3')
-    l0_net = pointnet_fp_module(point_cloud_0, new_point_cloud_1, l0_net, l1_net, [128, 128, 128], is_training, bn_decay, scope='fa_layer4')
+    l3_net = pointnet_fp_module(new_point_cloud_3, new_point_cloud_4, l3_net, l4_net, [256, 256], is_training, bn_decay, scope='fa_layer1', is_dist=True)
+    l2_net = pointnet_fp_module(new_point_cloud_2, new_point_cloud_3, l2_net, l3_net, [256, 256], is_training, bn_decay, scope='fa_layer2', is_dist=True)
+    l1_net = pointnet_fp_module(new_point_cloud_1, new_point_cloud_2, l1_net, l2_net, [256, 128], is_training, bn_decay, scope='fa_layer3', is_dist=True)
+    l0_net = pointnet_fp_module(point_cloud_0, new_point_cloud_1, l0_net, l1_net, [128, 128, 128], is_training, bn_decay, scope='fa_layer4', is_dist=True)
 
     net = tf.expand_dims(l0_net, axis=-2)
 
 
     # FC layers
-    net = tf_util.conv2d(net, 128, [1, 1], padding='VALID', stride=[1, 1], bn=True, is_training=is_training, scope='fc1', bn_decay=bn_decay)
+    net = tf_util.conv2d(net, 128, [1, 1], padding='VALID', stride=[1, 1], bn=True, is_training=is_training, scope='fc1', bn_decay=bn_decay, is_dist=True)
     end_points['feats'] = net
     net = tf_util.dropout(net, keep_prob=0.5, is_training=is_training, scope='dp1')
-    net = tf_util.conv2d(net, 13, [1, 1], padding='VALID', activation_fn=None, scope='fc2')
+    net = tf_util.conv2d(net, 13, [1, 1], padding='VALID', activation_fn=None, scope='fc2', is_dist=True)
     net = tf.squeeze(net, [2])
 
 
