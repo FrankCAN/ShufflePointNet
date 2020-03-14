@@ -13,3 +13,11 @@ The code is tested under [TensorFlow](https://www.tensorflow.org/) 1.6 GPU versi
 
 Some necessary operators are included under tf_ops, so you need to compile them in advance. Update nvcc and python path if necessary. The code is tested under TF1.6.0. If you are using earlier version it's possible that you need to remove the -D_GLIBCXX_USE_CXX11_ABI=0 flag in g++ command in order to compile correctly.
 
+# implementation
+#### Shape Classification
+To train a classification model for ModelNet40 shapes:
+
+        python train.py
+To evaluate accuracy after training:
+
+        python evaluate.py
