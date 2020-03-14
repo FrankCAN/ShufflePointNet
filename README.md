@@ -51,4 +51,4 @@ To evaluate accuracy after training:
 
 
 # Visualization
-In order to visualize the predicted results, software [MeshLab] (http://www.meshlab.net/) can be used for single and multiple objects visualization.
+In order to visualize the predicted results, software [MeshLab](http://www.meshlab.net/) can be used for single and multiple objects visualization.
